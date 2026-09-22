@@ -2,11 +2,11 @@
 
 <img width="1348" height="763" alt="Captura de pantalla 2026-09-22 a la(s) 18 35 33" src="https://github.com/user-attachments/assets/ae70e1da-6d39-424e-8634-875de02aa49f" />
 
-![Uploading Captura de pantalla 2026-09-22 a la(s) 18.35.40.png…]()
+<img width="1348" height="763" alt="Captura de pantalla 2026-09-22 a la(s) 18 35 40" src="https://github.com/user-attachments/assets/2b52a603-0375-4f2b-91b9-91206753226c" />
 
-![Uploading Captura de pantalla 2026-09-22 a la(s) 18.35.47.png…]()
+<img width="1348" height="763" alt="Captura de pantalla 2026-09-22 a la(s) 18 35 47" src="https://github.com/user-attachments/assets/140dade5-7d75-4a55-aeec-e6aecde5cf63" />
 
-![Uploading Captura de pantalla 2026-09-22 a la(s) 18.35.53.png…]()
+<img width="1348" height="763" alt="Captura de pantalla 2026-09-22 a la(s) 18 35 53" src="https://github.com/user-attachments/assets/521f3600-d89f-4e83-8353-eb85eeb10513" />
 
 Este proyecto es una de mis primeras pruebas dedesarrollo web para construir mi portfolio personal.
 
