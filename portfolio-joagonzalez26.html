@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Portfolio — Joaquín González</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#06060A;font-family:'DM Sans',sans-serif;color:#fff}
+:root{--blue:#38BDF8;--cyan:#22D3EE;--purple:#A78BFA;--pink:#F472B6;--amber:#FCD34D;--orange:#FB923C;--green:#34D399}
+
+.stage{position:fixed;inset:0}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:5vw 7vw;opacity:0;pointer-events:none;transition:opacity 1.3s cubic-bezier(.4,0,.2,1)}
+.slide.active{opacity:1;pointer-events:all}
+
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:0;transition:opacity 2s ease;animation:drift 14s ease-in-out infinite alternate}
+.slide.active .orb{opacity:1}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}40%{transform:translate(4%,-3%) scale(1.06)}70%{transform:translate(-3%,4%) scale(.96)}100%{transform:translate(2%,2%) scale(1.04)}}
+
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.45}
+
+#progress-bar{position:fixed;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--purple));width:0%;z-index:200;transition:width .5s ease;box-shadow:0 0 14px 2px rgba(56,189,248,.5)}
+#nav{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:200}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);border:none;cursor:pointer;transition:all .4s ease;padding:0}
+.dot.active{background:#fff;width:26px;border-radius:3px}
+#arrows{position:fixed;right:2.5rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:200}
+.arrow{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.05);backdrop-filter:blur(8px);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;transition:all .3s ease}
+.arrow:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3)}
+#counter{position:fixed;top:2rem;right:2.5rem;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.28);letter-spacing:.15em;z-index:200}
+
+/* ── INTRO ── */
+.intro-wrap{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:5vw;width:100%;max-width:1200px}
+@media(max-width:700px){.intro-wrap{grid-template-columns:1fr}.laptop-scene{display:none}}
+
+.intro-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1.4rem;opacity:0;transform:translateY(14px);transition:opacity .9s ease .2s,transform .9s ease .2s}
+.slide.active .intro-kicker{opacity:1;transform:translateY(0)}
+
+.intro-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,13vw,12rem);line-height:.9;letter-spacing:.02em;opacity:0;transform:translateY(30px);transition:opacity 1.1s ease .35s,transform 1.1s cubic-bezier(.16,1,.3,1) .35s}
+.slide.active .intro-name{opacity:1;transform:translateY(0)}
+.intro-name .l1{background:linear-gradient(100deg,#fff 40%,rgba(255,255,255,.5));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:block}
+.intro-name .l2{background:linear-gradient(100deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:block}
+
+.intro-role{font-size:clamp(.85rem,1.6vw,1.05rem);font-weight:300;color:rgba(255,255,255,.42);letter-spacing:.05em;margin-top:1.8rem;line-height:1.75;opacity:0;transform:translateY(12px);transition:opacity .9s ease .75s,transform .9s ease .75s}
+.slide.active .intro-role{opacity:1;transform:translateY(0)}
+
+.intro-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.8rem;opacity:0;transition:opacity .9s ease 1s}
+.slide.active .intro-tags{opacity:1}
+.intro-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;padding:5px 14px;border-radius:100px;border:1px solid rgba(255,255,255,.11);color:rgba(255,255,255,.4)}
+
+.hint-bar{position:fixed;bottom:4.2rem;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(255,255,255,.2);text-transform:uppercase;z-index:200;animation:blink 2.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:.7}}
+
+/* ── LAPTOP 3D ── */
+.laptop-scene{display:flex;align-items:center;justify-content:center;perspective:1000px;opacity:0;transition:opacity 1.4s ease .5s}
+.slide.active .laptop-scene{opacity:1}
+
+.laptop-3d{transform-style:preserve-3d;animation:apple-float 7s ease-in-out infinite,apple-enter 1.5s cubic-bezier(.16,1,.3,1) .5s both;filter:drop-shadow(0 30px 60px rgba(56,189,248,.15)) drop-shadow(0 0 40px rgba(167,139,250,.1))}
+@keyframes apple-enter{from{transform:rotateX(24deg) rotateY(-30deg) translateY(30px);opacity:0}to{transform:rotateX(7deg) rotateY(-13deg) translateY(0);opacity:1}}
+@keyframes apple-float{0%,100%{transform:rotateX(7deg) rotateY(-13deg) translateY(0)}30%{transform:rotateX(5deg) rotateY(-10deg) translateY(-16px)}65%{transform:rotateX(9deg) rotateY(-16deg) translateY(-7px)}}
+
+/* ── PROJECT SLIDES ── */
+.project-layout{display:grid;grid-template-columns:1fr 1fr;gap:5vw;align-items:center;width:100%;max-width:1150px}
+@media(max-width:700px){.project-layout{grid-template-columns:1fr}}
+
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1.2rem;opacity:0;transform:translateY(12px);transition:opacity .8s ease .2s,transform .8s ease .2s}
+.slide.active .eyebrow{opacity:1;transform:translateY(0)}
+
+.title-main{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,9vw,8.5rem);line-height:.92;letter-spacing:.03em;opacity:0;transform:translateY(22px);transition:opacity 1s ease .38s,transform 1s cubic-bezier(.16,1,.3,1) .38s}
+.slide.active .title-main{opacity:1;transform:translateY(0)}
+.ta{background:linear-gradient(135deg,var(--c1,#fff),var(--c2,#aaa));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.tw{-webkit-text-fill-color:#fff}
+
+.divider{width:40px;height:1px;background:rgba(255,255,255,.13);margin:1.6rem 0;opacity:0;transition:opacity .9s ease .56s}
+.slide.active .divider{opacity:1}
+
+.subtitle{font-size:clamp(.9rem,1.6vw,1.05rem);font-weight:300;color:rgba(255,255,255,.5);max-width:520px;line-height:1.74;opacity:0;transform:translateY(12px);transition:opacity .9s ease .66s,transform .9s ease .66s}
+.slide.active .subtitle{opacity:1;transform:translateY(0)}
+
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:2rem;opacity:0;transform:translateY(10px);transition:opacity .9s ease .88s,transform .9s ease .88s}
+.slide.active .badges{opacity:1;transform:translateY(0)}
+.badge{padding:5px 15px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;border:1px solid;backdrop-filter:blur(4px)}
+
+.stats{display:flex;gap:2.2rem;margin-top:1.8rem;opacity:0;transform:translateY(10px);transition:opacity .9s ease 1.05s,transform .9s ease 1.05s}
+.slide.active .stats{opacity:1;transform:translateY(0)}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;line-height:1}
+.stat-label{font-size:11px;color:rgba(255,255,255,.3);margin-top:4px;letter-spacing:.08em}
+
+.project-right{opacity:0;transform:translateX(34px);transition:opacity 1s ease .55s,transform 1s cubic-bezier(.16,1,.3,1) .55s}
+.slide.active .project-right{opacity:1;transform:translateX(0)}
+
+.code-window{background:rgba(6,6,12,.88);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;backdrop-filter:blur(20px)}
+.code-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.05)}
+.code-dot{width:10px;height:10px;border-radius:50%}
+.code-file{margin-left:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.22)}
+.code-body{padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.9;color:rgba(255,255,255,.5)}
+.cg{color:#34D399}.cb{color:#60A5FA}.cp{color:#C084FC}.ca{color:#FBBF24}.cc{color:rgba(255,255,255,.22)}
+
+.stages{display:flex;gap:1rem;margin-top:1.1rem;flex-wrap:wrap}
+.stage-card{flex:1;min-width:130px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:.9rem 1.1rem;backdrop-filter:blur(4px)}
+.stage-num{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.27);margin-bottom:.35rem}
+.stage-name{font-size:13px;font-weight:500;color:rgba(255,255,255,.87);margin-bottom:.2rem}
+.stage-desc{font-size:11px;color:rgba(255,255,255,.36);line-height:1.5}
+
+.gh-link{display:inline-flex;align-items:center;gap:7px;margin-top:1.3rem;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35);text-decoration:none;letter-spacing:.09em;border:1px solid rgba(255,255,255,.09);border-radius:100px;padding:7px 18px;backdrop-filter:blur(6px);transition:all .32s ease}
+.gh-link:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.27);color:#fff}
+
+/* ── OUTRO ── */
+.outro-wrap{text-align:center;position:relative;z-index:2}
+.outro-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,12vw,11rem);line-height:.9;letter-spacing:.03em;opacity:0;transform:scale(.96) translateY(22px);transition:opacity 1.2s ease .3s,transform 1.2s cubic-bezier(.16,1,.3,1) .3s}
+.slide.active .outro-name{opacity:1;transform:scale(1) translateY(0)}
+.outro-url{font-family:'JetBrains Mono',monospace;font-size:clamp(.9rem,2vw,1.4rem);color:rgba(255,255,255,.42);letter-spacing:.06em;margin-top:1.4rem;opacity:0;transition:opacity 1s ease .85s}
+.slide.active .outro-url{opacity:1}
+.outro-sub{font-size:clamp(.82rem,1.4vw,.96rem);font-weight:300;color:rgba(255,255,255,.28);margin-top:1rem;line-height:1.72;opacity:0;transition:opacity 1s ease 1.05s}
+.slide.active .outro-sub{opacity:1}
+.outro-cta{display:inline-block;margin-top:2.8rem;padding:13px 38px;border-radius:100px;border:1px solid rgba(255,255,255,.17);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#fff;text-decoration:none;backdrop-filter:blur(8px);background:rgba(255,255,255,.05);opacity:0;transform:translateY(10px);transition:opacity .9s ease 1.2s,transform .9s ease 1.2s,background .32s,border-color .32s}
+.slide.active .outro-cta{opacity:1;transform:translateY(0)}
+.outro-cta:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.37)}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="counter">01 / 05</div>
+<div id="nav">
+  <button class="dot active" onclick="goTo(0)"></button>
+  <button class="dot" onclick="goTo(1)"></button>
+  <button class="dot" onclick="goTo(2)"></button>
+  <button class="dot" onclick="goTo(3)"></button>
+  <button class="dot" onclick="goTo(4)"></button>
+</div>
+<div id="arrows">
+  <button class="arrow" onclick="prev()">↑</button>
+  <button class="arrow" onclick="next()">↓</button>
+</div>
+<div class="hint-bar" id="hint">Presioná cualquier tecla para continuar</div>
+
+<div class="stage">
+
+  <!-- ══ INTRO ══ -->
+  <div class="slide active" id="slide-0">
+    <div class="orb" style="width:55vw;height:55vw;top:-18%;left:-8%;background:radial-gradient(circle,rgba(56,189,248,.42),rgba(99,102,241,.28),transparent)"></div>
+    <div class="orb" style="width:40vw;height:40vw;bottom:-12%;right:-6%;background:radial-gradient(circle,rgba(167,139,250,.38),rgba(236,72,153,.22),transparent);animation-delay:-5s"></div>
+    <div class="orb" style="width:28vw;height:28vw;bottom:15%;left:12%;background:radial-gradient(circle,rgba(52,211,153,.18),transparent);animation-delay:-9s"></div>
+
+    <div class="intro-wrap">
+      <div>
+        <div class="intro-kicker">Portfolio · 2026 · Desarrollador</div>
+        <div class="intro-name">
+          <span class="l1">JOAQUÍN</span>
+          <span class="l2">GONZÁLEZ</span>
+        </div>
+        <div class="intro-role">
+          Informática · Universidad Siglo 21<br>
+          QA Engineer · Python Dev · Java
+        </div>
+        <div class="intro-tags">
+          <span class="intro-tag">Testing</span>
+          <span class="intro-tag">Automatización</span>
+          <span class="intro-tag">POO</span>
+          <span class="intro-tag">Python</span>
+          <span class="intro-tag">Java</span>
+        </div>
+      </div>
+
+      <div class="laptop-scene">
+        <div class="laptop-3d">
+          <svg width="440" height="330" viewBox="0 0 440 330" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="gLid" x1="0" y1="0" x2="440" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#181824"/>
+                <stop offset="50%" stop-color="#22223A"/>
+                <stop offset="100%" stop-color="#141420"/>
+              </linearGradient>
+              <linearGradient id="gScreen" x1="32" y1="14" x2="408" y2="14" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#06060F"/>
+                <stop offset="100%" stop-color="#0A0A1C"/>
+              </linearGradient>
+              <linearGradient id="gBase" x1="0" y1="0" x2="440" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#111120"/>
+                <stop offset="50%" stop-color="#1C1C30"/>
+                <stop offset="100%" stop-color="#0E0E1C"/>
+              </linearGradient>
+              <linearGradient id="gHinge" x1="0" y1="0" x2="440" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#0A0A14"/>
+                <stop offset="50%" stop-color="#181826"/>
+                <stop offset="100%" stop-color="#0A0A14"/>
+              </linearGradient>
+              <linearGradient id="gShine" x1="32" y1="0" x2="408" y2="240" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="rgba(56,189,248,0.07)"/>
+                <stop offset="45%" stop-color="rgba(167,139,250,0.03)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </linearGradient>
+              <radialGradient id="gSpot" cx="40%" cy="25%" r="55%">
+                <stop offset="0%" stop-color="rgba(56,189,248,0.12)"/>
+                <stop offset="100%" stop-color="rgba(56,189,248,0)"/>
+              </radialGradient>
+              <clipPath id="cScreen">
+                <rect x="32" y="14" width="376" height="228" rx="5"/>
+              </clipPath>
+            </defs>
+
+            <!-- LID -->
+            <rect x="0" y="0" width="440" height="256" rx="14" fill="url(#gLid)"/>
+            <rect x="0" y="0" width="440" height="1.5" rx="1" fill="rgba(255,255,255,0.08)"/>
+            <rect x="0" y="0" width="1.5" height="256" rx="1" fill="rgba(255,255,255,0.05)"/>
+            <rect x="438.5" y="0" width="1.5" height="256" rx="1" fill="rgba(255,255,255,0.03)"/>
+
+            <!-- BEZEL -->
+            <rect x="22" y="8" width="396" height="248" rx="8" fill="rgba(0,0,0,0.65)"/>
+
+            <!-- SCREEN -->
+            <rect x="32" y="14" width="376" height="228" rx="5" fill="url(#gScreen)"/>
+
+            <!-- CODE CONTENT -->
+            <g clip-path="url(#cScreen)">
+              <!-- line numbers -->
+              <text x="40" y="40" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.13)">1</text>
+              <text x="40" y="56" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.13)">2</text>
+              <text x="40" y="72" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.13)">3</text>
+              <text x="40" y="88" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.13)">4</text>
+              <text x="40" y="104" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.13)">5</text>
+              <text x="40" y="120" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.13)">6</text>
+              <text x="40" y="136" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.13)">7</text>
+
+              <!-- code -->
+              <text x="58" y="40" font-family="monospace" font-size="9" fill="rgba(192,132,252,0.85)">from</text>
+              <text x="88" y="40" font-family="monospace" font-size="9" fill="rgba(96,165,250,0.8)"> selenium</text>
+              <text x="149" y="40" font-family="monospace" font-size="9" fill="rgba(192,132,252,0.85)"> import</text>
+              <text x="200" y="40" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.55)"> webdriver</text>
+
+              <text x="58" y="56" font-family="monospace" font-size="9" fill="rgba(52,211,153,0.75)">class</text>
+              <text x="89" y="56" font-family="monospace" font-size="9" fill="rgba(251,191,36,0.88)"> GestorTareas</text>
+              <text x="196" y="56" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.35)">(QMainWindow):</text>
+
+              <text x="72" y="72" font-family="monospace" font-size="9" fill="rgba(96,165,250,0.8)">def</text>
+              <text x="92" y="72" font-family="monospace" font-size="9" fill="rgba(251,191,36,0.85)"> agregar_tarea</text>
+              <text x="199" y="72" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.35)">(self):</text>
+
+              <text x="86" y="88" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.45)">texto = self.input.text()</text>
+              <text x="86" y="104" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.45)">self.tareas.append({</text>
+              <text x="100" y="120" font-family="monospace" font-size="9" fill="rgba(52,211,153,0.7)">"texto"</text>
+              <text x="138" y="120" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.4)">: texto,</text>
+              <text x="100" y="136" font-family="monospace" font-size="9" fill="rgba(52,211,153,0.7)">"completada"</text>
+              <text x="176" y="136" font-family="monospace" font-size="9" fill="rgba(192,132,252,0.8)">: False</text>
+
+              <!-- cursor -->
+              <rect x="58" y="150" width="5.5" height="10" rx="1" fill="rgba(56,189,248,0.9)">
+                <animate attributeName="opacity" values="1;0;1" dur="1.1s" repeatCount="indefinite"/>
+              </rect>
+
+              <!-- bottom dim lines -->
+              <rect x="58" y="168" width="120" height="7" rx="2" fill="rgba(255,255,255,0.04)"/>
+              <rect x="58" y="180" width="80" height="7" rx="2" fill="rgba(255,255,255,0.03)"/>
+
+              <!-- tabs bar -->
+              <rect x="32" y="212" width="376" height="1" fill="rgba(255,255,255,0.05)"/>
+              <rect x="32" y="213" width="78" height="15" rx="0" fill="rgba(56,189,248,0.08)"/>
+              <text x="40" y="224" font-family="monospace" font-size="8" fill="rgba(56,189,248,0.7)">main.py</text>
+              <rect x="110" y="213" width="86" height="15" rx="0" fill="rgba(255,255,255,0.02)"/>
+              <text x="118" y="224" font-family="monospace" font-size="8" fill="rgba(255,255,255,0.22)">test_calc.py</text>
+              <rect x="196" y="213" width="70" height="15" rx="0" fill="rgba(255,255,255,0.02)"/>
+              <text x="204" y="224" font-family="monospace" font-size="8" fill="rgba(255,255,255,0.22)">Main.java</text>
+
+              <!-- shine + glow -->
+              <rect x="32" y="14" width="376" height="228" fill="url(#gShine)"/>
+              <rect x="32" y="14" width="376" height="228" fill="url(#gSpot)"/>
+            </g>
+
+            <!-- WEBCAM -->
+            <circle cx="220" cy="6" r="2.8" fill="#0E0E1C"/>
+            <circle cx="220" cy="6" r="1.3" fill="rgba(52,211,153,0.55)">
+              <animate attributeName="opacity" values="1;0.3;1" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+
+            <!-- HINGE -->
+            <rect x="0" y="256" width="440" height="11" fill="url(#gHinge)"/>
+            <rect x="0" y="259" width="440" height="1.5" fill="rgba(255,255,255,0.04)"/>
+
+            <!-- BASE -->
+            <rect x="0" y="267" width="440" height="56" rx="10" fill="url(#gBase)"/>
+            <rect x="0" y="267" width="440" height="1" fill="rgba(255,255,255,0.08)"/>
+
+            <!-- KEYBOARD R1 -->
+            <g fill="rgba(255,255,255,0.065)" stroke="rgba(255,255,255,0.045)" stroke-width="0.5">
+              <rect x="18" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="39" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="60" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="81" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="102" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="123" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="144" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="165" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="186" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="207" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="228" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="249" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="270" y="276" width="17" height="9" rx="2.5"/>
+              <rect x="291" y="276" width="30" height="9" rx="2.5"/>
+            </g>
+            <!-- KEYBOARD R2 + SPACEBAR -->
+            <g fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.04)" stroke-width="0.5">
+              <rect x="18" y="289" width="25" height="9" rx="2.5"/>
+              <rect x="47" y="289" width="17" height="9" rx="2.5"/>
+              <rect x="68" y="289" width="17" height="9" rx="2.5"/>
+              <rect x="89" y="289" width="17" height="9" rx="2.5"/>
+              <rect x="110" y="289" width="76" height="9" rx="2.5"/>
+              <rect x="190" y="289" width="17" height="9" rx="2.5"/>
+              <rect x="211" y="289" width="17" height="9" rx="2.5"/>
+              <rect x="232" y="289" width="68" height="9" rx="2.5"/>
+            </g>
+
+            <!-- TRACKPAD -->
+            <rect x="160" y="302" width="120" height="16" rx="4" fill="rgba(255,255,255,0.035)" stroke="rgba(255,255,255,0.045)" stroke-width="0.5"/>
+
+            <!-- BASE BOTTOM -->
+            <rect x="0" y="316" width="440" height="7" rx="5" fill="rgba(8,8,16,0.9)"/>
+            <rect x="44" y="320" width="352" height="1.5" rx="1" fill="rgba(255,255,255,0.025)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 1 — QA TESTING ══ -->
+  <div class="slide" id="slide-1">
+    <div class="orb" style="width:50vw;height:50vw;top:-20%;right:-8%;background:radial-gradient(circle,rgba(56,189,248,.4),rgba(14,165,233,.22),transparent)"></div>
+    <div class="orb" style="width:35vw;height:35vw;bottom:-10%;left:-4%;background:radial-gradient(circle,rgba(34,211,238,.22),transparent);animation-delay:-3s"></div>
+    <div class="project-layout">
+      <div>
+        <div class="eyebrow">Proyecto 01 · QA Engineering</div>
+        <h2 class="title-main">
+          <span class="ta" style="--c1:#38BDF8;--c2:#22D3EE">TESTING</span><br>
+          <span class="tw">SISTEMA</span><br>
+          <span class="tw">ESTADÍSTICA</span>
+        </h2>
+        <div class="divider"></div>
+        <div class="subtitle">Proyecto QA completo sobre un sistema de Estadística y Probabilidad. Tres etapas progresivas: testing manual exhaustivo, automatización con Selenium y Robot Framework, y testing asistido por IA.</div>
+        <div class="badges">
+          <span class="badge" style="color:#38BDF8;border-color:rgba(56,189,248,.2);background:rgba(56,189,248,.06)">Selenium</span>
+          <span class="badge" style="color:#34D399;border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.06)">Python</span>
+          <span class="badge" style="color:#C084FC;border-color:rgba(192,132,252,.2);background:rgba(192,132,252,.06)">Robot Framework</span>
+          <span class="badge" style="color:#FBBF24;border-color:rgba(251,191,36,.2);background:rgba(251,191,36,.06)">AI Testing</span>
+        </div>
+        <div class="stats">
+          <div><div class="stat-val" style="background:linear-gradient(135deg,#38BDF8,#22D3EE);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">3</div><div class="stat-label">etapas</div></div>
+          <div><div class="stat-val" style="background:linear-gradient(135deg,#38BDF8,#22D3EE);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">★4</div><div class="stat-label">GitHub stars</div></div>
+          <div><div class="stat-val" style="background:linear-gradient(135deg,#38BDF8,#22D3EE);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">2</div><div class="stat-label">frameworks</div></div>
+        </div>
+      </div>
+      <div class="project-right">
+        <div class="code-window">
+          <div class="code-titlebar"><div class="code-dot" style="background:#FF5F57"></div><div class="code-dot" style="background:#FEBC2E"></div><div class="code-dot" style="background:#28C840"></div><span class="code-file">test_calculadora.py</span></div>
+          <div class="code-body"><span class="cc"># Etapa 2 — Automatización</span><br><span class="cp">from</span><span class="cb"> selenium</span> <span class="cp">import</span> webdriver<br><span class="cp">import</span><span class="cb"> unittest</span><br><br><span class="cg">class</span> TestCalculadora(<br>&nbsp;&nbsp;unittest.TestCase<br>):<br>&nbsp;&nbsp;<span class="cb">def</span><span class="ca"> test_smoke</span>(self):<br>&nbsp;&nbsp;&nbsp;&nbsp;self.driver.get(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cg">"http://localhost"</span><br>&nbsp;&nbsp;&nbsp;&nbsp;)<br>&nbsp;&nbsp;&nbsp;&nbsp;assert self.driver.title != <span class="cg">""</span><br><br><span class="cc"># Etapa 3 — IA asiste el QA</span></div>
+        </div>
+        <div class="stages">
+          <div class="stage-card"><div class="stage-num">ETAPA 01</div><div class="stage-name">Testing Manual</div><div class="stage-desc">Plan, casos, bugs, regresión</div></div>
+          <div class="stage-card"><div class="stage-num">ETAPA 02</div><div class="stage-name">Automatización</div><div class="stage-desc">Selenium + Robot Framework</div></div>
+          <div class="stage-card"><div class="stage-num">ETAPA 03</div><div class="stage-name">Testing + IA</div><div class="stage-desc">Prompts, casos borde</div></div>
+        </div>
+        <a class="gh-link" href="https://github.com/joagonzalez26/testing-sistema-estadistica" target="_blank">⭑ github.com/joagonzalez26/testing-sistema-estadistica</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 2 — SISTEMA GESTIÓN ══ -->
+  <div class="slide" id="slide-2">
+    <div class="orb" style="width:50vw;height:50vw;top:-15%;left:-5%;background:radial-gradient(circle,rgba(167,139,250,.38),rgba(139,92,246,.22),transparent)"></div>
+    <div class="orb" style="width:40vw;height:40vw;bottom:-10%;right:-5%;background:radial-gradient(circle,rgba(244,114,182,.33),rgba(236,72,153,.18),transparent);animation-delay:-5s"></div>
+    <div class="project-layout">
+      <div>
+        <div class="eyebrow">Proyecto 02 · Desktop App</div>
+        <h2 class="title-main">
+          <span class="ta" style="--c1:#A78BFA;--c2:#F472B6">SISTEMA</span><br>
+          <span class="tw">DE GESTIÓN</span><br>
+          <span class="tw">DE TAREAS</span>
+        </h2>
+        <div class="divider"></div>
+        <div class="subtitle">Primer sistema de escritorio completo. Python + PySide6, interfaz oscura con paneles semitransparentes, persistencia automática en JSON y diseño visual refinado desde cero.</div>
+        <div class="badges">
+          <span class="badge" style="color:#A78BFA;border-color:rgba(167,139,250,.2);background:rgba(167,139,250,.06)">Python 3.14</span>
+          <span class="badge" style="color:#F472B6;border-color:rgba(244,114,182,.2);background:rgba(244,114,182,.06)">PySide6</span>
+          <span class="badge" style="color:#FBBF24;border-color:rgba(251,191,36,.2);background:rgba(251,191,36,.06)">Qt Stylesheets</span>
+          <span class="badge" style="color:#34D399;border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.06)">JSON</span>
+        </div>
+        <div class="stats">
+          <div><div class="stat-val" style="background:linear-gradient(135deg,#A78BFA,#F472B6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">5+</div><div class="stat-label">funciones</div></div>
+          <div><div class="stat-val" style="background:linear-gradient(135deg,#A78BFA,#F472B6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">∞</div><div class="stat-label">persistencia</div></div>
+        </div>
+      </div>
+      <div class="project-right">
+        <div class="code-window">
+          <div class="code-titlebar"><div class="code-dot" style="background:#FF5F57"></div><div class="code-dot" style="background:#FEBC2E"></div><div class="code-dot" style="background:#28C840"></div><span class="code-file">main.py</span></div>
+          <div class="code-body"><span class="cp">from</span><span class="cb"> PySide6.QtWidgets</span> <span class="cp">import</span> *<br><span class="cp">import</span><span class="cb"> json</span><br><br><span class="cg">class</span> GestorTareas(QMainWindow):<br><br>&nbsp;&nbsp;<span class="cb">def</span><span class="ca"> agregar_tarea</span>(self):<br>&nbsp;&nbsp;&nbsp;&nbsp;texto = self.input.text()<br>&nbsp;&nbsp;&nbsp;&nbsp;self.tareas.append({<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cg">"texto"</span>: texto,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cg">"completada"</span>: <span class="cp">False</span><br>&nbsp;&nbsp;&nbsp;&nbsp;})<br>&nbsp;&nbsp;&nbsp;&nbsp;self.<span class="ca">guardar_json</span>()<br>&nbsp;&nbsp;&nbsp;&nbsp;self.<span class="ca">actualizar_ui</span>()<br><br><span class="cc"># interfaz oscura con QSS</span></div>
+        </div>
+        <div class="stages">
+          <div class="stage-card"><div class="stage-num">UI / UX</div><div class="stage-name">Interfaz Oscura</div><div class="stage-desc">Paneles semitransparentes, avatar custom</div></div>
+          <div class="stage-card"><div class="stage-num">DATOS</div><div class="stage-name">JSON Local</div><div class="stage-desc">Guardado automático en cada cambio</div></div>
+        </div>
+        <a class="gh-link" href="https://github.com/joagonzalez26/sistema-de-gestion" target="_blank">⭑ github.com/joagonzalez26/sistema-de-gestion</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 3 — POO EN JAVA ══ -->
+  <div class="slide" id="slide-3">
+    <div class="orb" style="width:50vw;height:50vw;top:-10%;right:-5%;background:radial-gradient(circle,rgba(251,146,60,.38),rgba(249,115,22,.22),transparent)"></div>
+    <div class="orb" style="width:40vw;height:40vw;bottom:-15%;left:-5%;background:radial-gradient(circle,rgba(252,211,77,.22),transparent);animation-delay:-6s"></div>
+    <div class="project-layout">
+      <div>
+        <div class="eyebrow">Proyecto 03 · Backend · OOP</div>
+        <h2 class="title-main">
+          <span class="ta" style="--c1:#FB923C;--c2:#FCD34D">POO</span><br>
+          <span class="tw">EN JAVA</span>
+        </h2>
+        <div class="divider"></div>
+        <div class="subtitle">Implementación práctica de los cuatro pilares de la Programación Orientada a Objetos en Java. Herencia, polimorfismo, encapsulamiento y abstracción aplicados en casos de dominio real.</div>
+        <div class="badges">
+          <span class="badge" style="color:#FB923C;border-color:rgba(251,146,60,.2);background:rgba(251,146,60,.06)">Java</span>
+          <span class="badge" style="color:#FCD34D;border-color:rgba(252,211,77,.2);background:rgba(252,211,77,.06)">OOP</span>
+          <span class="badge" style="color:#38BDF8;border-color:rgba(56,189,248,.2);background:rgba(56,189,248,.06)">Herencia</span>
+          <span class="badge" style="color:#34D399;border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.06)">Polimorfismo</span>
+        </div>
+        <div class="stats">
+          <div><div class="stat-val" style="background:linear-gradient(135deg,#FB923C,#FCD34D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">4</div><div class="stat-label">pilares OOP</div></div>
+          <div><div class="stat-val" style="background:linear-gradient(135deg,#FB923C,#FCD34D);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">100%</div><div class="stat-label">Java puro</div></div>
+        </div>
+      </div>
+      <div class="project-right">
+        <div class="code-window">
+          <div class="code-titlebar"><div class="code-dot" style="background:#FF5F57"></div><div class="code-dot" style="background:#FEBC2E"></div><div class="code-dot" style="background:#28C840"></div><span class="code-file">Main.java</span></div>
+          <div class="code-body"><span class="cc">// Herencia y polimorfismo</span><br><span class="cp">public abstract class</span><span class="ca"> Persona</span> {<br>&nbsp;&nbsp;<span class="cp">private</span> String nombre;<br>&nbsp;&nbsp;<span class="cb">public abstract void</span><span class="cg"> presentarse</span>();<br>}<br><br><span class="cp">public class</span><span class="ca"> Estudiante</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cp">extends</span><span class="cb"> Persona</span> {<br>&nbsp;&nbsp;<span class="cb">@Override</span><br>&nbsp;&nbsp;<span class="cp">public void</span><span class="cg"> presentarse</span>() {<br>&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cg">"Hola, soy "</span> + nombre<br>&nbsp;&nbsp;&nbsp;&nbsp;);<br>&nbsp;&nbsp;}<br>}</div>
+        </div>
+        <div class="stages">
+          <div class="stage-card"><div class="stage-num">DISEÑO</div><div class="stage-name">Encapsulamiento</div><div class="stage-desc">Atributos privados y acceso controlado</div></div>
+          <div class="stage-card"><div class="stage-num">ESTRUCTURA</div><div class="stage-name">Herencia</div><div class="stage-desc">Jerarquías y reutilización de código</div></div>
+        </div>
+        <a class="gh-link" href="https://github.com/joagonzalez26/poo-en-java" target="_blank">⭑ github.com/joagonzalez26/poo-en-java</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ OUTRO ══ -->
+  <div class="slide" id="slide-4">
+    <div class="orb" style="width:65vw;height:65vw;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(56,189,248,.32),rgba(167,139,250,.22),rgba(244,114,182,.18),transparent)"></div>
+    <div class="outro-wrap">
+      <div class="eyebrow" style="justify-content:center;display:flex">Joaquín Lorenzo González · 2026</div>
+      <div class="outro-name">
+        <span style="background:linear-gradient(100deg,#fff 40%,rgba(255,255,255,.45));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">LET'S BUILD</span><br>
+        <span style="background:linear-gradient(100deg,#38BDF8,#A78BFA,#F472B6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">SOMETHING.</span>
+      </div>
+      <div class="outro-url">github.com/joagonzalez26</div>
+      <div class="outro-sub">Estudiante de Informática · Universidad Empresarial Siglo 21<br>Testing · Python · Java · Automatización · IA</div>
+      <a class="outro-cta" href="https://github.com/joagonzalez26" target="_blank">Ver todos los proyectos →</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let cur=0;const total=5;
+const slides=document.querySelectorAll('.slide');
+const dots=document.querySelectorAll('.dot');
+const counter=document.getElementById('counter');
+const bar=document.getElementById('progress-bar');
+const hint=document.getElementById('hint');
+function pad(n){return n<10?'0'+n:n}
+function goTo(n){
+  if(n<0||n>=total)return;
+  slides[cur].classList.remove('active');dots[cur].classList.remove('active');
+  cur=n;
+  slides[cur].classList.add('active');dots[cur].classList.add('active');
+  counter.textContent=pad(cur+1)+' / '+pad(total);
+  bar.style.width=((cur/(total-1))*100)+'%';
+  if(hint)hint.style.display=cur===0?'':'none';
+}
+function next(){goTo(cur+1)}
+function prev(){goTo(cur-1)}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowRight'||e.key===' ')next();
+  if(e.key==='ArrowUp'||e.key==='ArrowLeft')prev();
+});
+let sY=0;
+document.addEventListener('touchstart',e=>{sY=e.touches[0].clientY});
+document.addEventListener('touchend',e=>{const d=sY-e.changedTouches[0].clientY;if(Math.abs(d)>50)d>0?next():prev()});
+document.addEventListener('click',e=>{if(e.target.closest('a')||e.target.closest('button'))return;next()});
+</script>
+</body>
+</html>
